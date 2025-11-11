@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../shared/databases/prisma.database';
 import { CreateOptionDto } from '../dto/create-option.dto';
+import { Criterion } from 'src/modules/criterion/entities/criterion.entity';
 
 @Injectable()
 export class CreateOptionRepository {
   constructor(private readonly prisma: PrismaService) {}
 
- async create(data: CreateOptionDto) {
+ async create(  data: CreateOptionDto) {
   return this.prisma.option.create({
     data: {
       name: data.name,
@@ -15,6 +16,13 @@ export class CreateOptionRepository {
         connect: { id: data.screnarioId }, 
       },
     },
+    include:{
+      scores:{
+        include:{
+          criterion: true,
+        }
+      }
+    }
   });
 }
 }
